@@ -38,7 +38,12 @@ function addTodo(event) {
 function deleteCheck(e) {
     const item = e.target;
     //delete todo
-    if(item.classList[0] === 'trash-btn')   {
-        item.parentElement.remove();
+    if(item.classList[0] === 'trash-btn') {
+        item.parentElement.classList.add('fall');
+        item.parentElement.addEventListener('transitionend', function(){
+            item.parentElement.remove();
+        });
     }
+    //check mark
+    if(item.classList[0] === 'complete-btn')  item.parentElement.classList.toggle('completed');
 }
