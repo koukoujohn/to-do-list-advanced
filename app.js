@@ -14,7 +14,7 @@ todoButton.addEventListener('click', addTodo);
 //listener for trash and check buttons
 todoList.addEventListener('click',deleteCheck);
 //listener for select element
-filterOption.addEventListener('click', filterTodo);
+// filterOption.addEventListener('click', filterTodo);
 
 //Functions
 
@@ -79,17 +79,17 @@ function deleteCheck(e) {
 /**
  * @deprecated Filtering will be changed from select element into buttons.
  */
-function filterTodo(e)   {
-    const todos = todoList.childNodes;
-    let filter = e.target.value;
-    console.log(filter);
-    for(todo of todos){
-        // console.log(todo);
-        if(filter === 'all') todo.style.display = 'flex';
-        else if(filter === 'completed') todo.classList.contains('completed') ? todo.style.display = 'flex' : todo.style.display = 'none';
-        else !todo.classList.contains('completed') ? todo.style.display = 'flex' : todo.style.display = 'none';
-    }
-}
+// function filterTodo(e)   {
+//     const todos = todoList.childNodes;
+//     let filter = e.target.value;
+//     console.log(filter);
+//     for(todo of todos){
+//         // console.log(todo);
+//         if(filter === 'all') todo.style.display = 'flex';
+//         else if(filter === 'completed') todo.classList.contains('completed') ? todo.style.display = 'flex' : todo.style.display = 'none';
+//         else !todo.classList.contains('completed') ? todo.style.display = 'flex' : todo.style.display = 'none';
+//     }
+// }
 
 /**
  * @function saveLocalTodos

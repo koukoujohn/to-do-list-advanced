@@ -108,7 +108,7 @@ form button:hover   {
 
 /* ----- Filter ----- */
 
-select {
+/* select {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -146,4 +146,4 @@ select {
 .select:hover::after {
     background: white;
     color: #ff6f47;
-}
+} */
