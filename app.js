@@ -76,20 +76,6 @@ function deleteCheck(e) {
     if(item.classList[0] === 'complete-btn') item.parentElement.classList.toggle('completed');
 }
 
-/**
- * @deprecated Filtering will be changed from select element into buttons.
- */
-// function filterTodo(e)   {
-//     const todos = todoList.childNodes;
-//     let filter = e.target.value;
-//     console.log(filter);
-//     for(todo of todos){
-//         // console.log(todo);
-//         if(filter === 'all') todo.style.display = 'flex';
-//         else if(filter === 'completed') todo.classList.contains('completed') ? todo.style.display = 'flex' : todo.style.display = 'none';
-//         else !todo.classList.contains('completed') ? todo.style.display = 'flex' : todo.style.display = 'none';
-//     }
-// }
 
 /**
  * @function saveLocalTodos
