@@ -66,9 +66,12 @@ form button:hover   {
     font-size: 1rem;
     display: flex;
     justify-content: space-between;
-    /* align-items: center; */
     transition: all 0.5s ease;
     border-radius: 10px;
+}
+
+.todo-item  {
+    align-self: center;
 }
 
 .todo li {
