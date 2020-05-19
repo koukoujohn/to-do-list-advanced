@@ -78,8 +78,10 @@ form button:hover   {
     flex: 1;
 }
 
-.trash-btn, .complete-btn {
-    background: #ff6f47;
+.trash-btn, 
+.complete-btn,
+.edit-btn {
+
     color: white;
     border: none;
     padding: 1rem;
@@ -88,6 +90,7 @@ form button:hover   {
 }
 
 .trash-btn {
+    background: #ff6f47;
     border-bottom-right-radius: 10px;
 }
 
@@ -95,12 +98,17 @@ form button:hover   {
     background: rgb(73, 204, 73);
 }
 
+.edit-btn {
+    background: #4f8df0;
+}
+
 .todo-item {
     padding: 0 1rem 0 0.5rem;
 }
 /* Clicking on the icons would prevent the parent button to be clicked */
 .fa-trash, 
-.fa-check {
+.fa-check,
+.fa-edit {
     pointer-events: none;
 }
 
