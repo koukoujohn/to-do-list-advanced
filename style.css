@@ -1,6 +1,5 @@
 /* ----- Global ----- */
 
-/* Remove basic browser styling */
 * {
     margin: 0;
     padding: 0;
@@ -8,14 +7,15 @@
 }
 
 body {
-    background-image: linear-gradient(120deg, #f6d365, #fda085);
+    background: linear-gradient(120deg, rgba(246,211,101,1) 0%, rgba(253,160,133,1) 100%);
     color: white ;
     font-family: "Poppins", sans-serif;
     min-height: 100vh;
+    text-align: center;
 }
 /* ----- Header and Form ----- */
 header {
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 header,
@@ -29,7 +29,7 @@ form {
 form input,
 form button {
     padding: 0.5rem;
-    font-size: 2rem;
+    font-size: 1rem;
     border: none;
     background: white;
 }
@@ -63,19 +63,25 @@ form button:hover   {
     margin: 0.5rem;
     background: white;
     color: black;
-    font-size: 1.5rem;
+    font-size: 1rem;
     display: flex;
     justify-content: space-between;
-    align-items: center;
     transition: all 0.5s ease;
+    border-radius: 10px;
+}
+
+.todo-item  {
+    align-self: center;
 }
 
 .todo li {
     flex: 1;
 }
 
-.trash-btn, .complete-btn {
-    background: #ff6f47;
+.trash-btn, 
+.complete-btn,
+.edit-btn {
+
     color: white;
     border: none;
     padding: 1rem;
@@ -83,16 +89,29 @@ form button:hover   {
     font-size: 1rem;
 }
 
+.trash-btn {
+    background: #ff6f47;
+    border-bottom-right-radius: 10px;
+}
+
 .complete-btn{
     background: rgb(73, 204, 73);
+}
+
+.edit-btn,
+.save-btn {
+    background: #4f8df0;
+    color: white;
 }
 
 .todo-item {
     padding: 0 1rem 0 0.5rem;
 }
-/* Clicking on the icons would prevent the parent button to be clicked */
+/* **fixes** Clicking on the icons would prevent the parent button to be clicked */
 .fa-trash, 
-.fa-check {
+.fa-check,
+.fa-edit,
+.fa-save {
     pointer-events: none;
 }
 
@@ -106,44 +125,30 @@ form button:hover   {
     opacity: 0;
 }
 
-/* ----- Filter ----- */
+/* ----- @media screen sizes -----  */
 
-/* select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    outline: none;
-    border: none;
+@media only screen and (min-width: 576px) {
+
+    header,
+    form input,
+    form button {
+        font-size: 2rem;
+    }
+
+    .todo {
+        font-size: 1.2rem;
+    }
+@media only screen and (min-width: 768px){
+    .todo {
+        font-size: 1.5rem;
+    }
 }
-
-.select {
-    margin: 1rem;
-    position: relative;
-    overflow: hidden;
+/*
+@media only screen and (min-width: 992px){
+    
 }
-
-select {
-    color: #ff6f47;
-    width: 10rem;
-    cursor: pointer;
-    padding: 1.2rem;
-    padding-left: 0.3rem;
-    font-size: 1rem;
-    font-weight: bold;
-}
-
-.select::after {
-    content: "\25BC";
-    position: absolute;
-    background: #ff6f47;
-    top: 0;
-    right: 0;
-    padding: 1rem;
-    pointer-events: none;
-    transition: all 0.3s ease;
-}
-
-.select:hover::after {
-    background: white;
-    color: #ff6f47;
+@media only screen and (min-width: 1200px){
+    
 } */
+
+}

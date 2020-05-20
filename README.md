@@ -1,4 +1,9 @@
 # to-do-list-advanced
+
+[Link](https://koukoujohn13.github.io/to-do-list-advanced/?)
+
+!!Work in progress!!
+
 A simple To-Do list app using local storage from a self-study fullstack web developer. 
 
 Planning to add more advanced features over time.
