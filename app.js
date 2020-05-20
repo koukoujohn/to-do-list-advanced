@@ -99,7 +99,7 @@ function deleteEditCheck(e) {
         form.appendChild(input);
         const button = document.createElement('button');
         button.setAttribute('type','submit');
-        button.classList.add('todo-button');
+        button.classList.add('save-btn');
         button.innerHTML = '<i class="fas fa-save"></i>';
         form.appendChild(button);
         todoElement.appendChild(form);
