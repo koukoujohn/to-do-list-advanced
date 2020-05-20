@@ -98,17 +98,20 @@ form button:hover   {
     background: rgb(73, 204, 73);
 }
 
-.edit-btn {
+.edit-btn,
+.save-btn {
     background: #4f8df0;
+    color: white;
 }
 
 .todo-item {
     padding: 0 1rem 0 0.5rem;
 }
-/* Clicking on the icons would prevent the parent button to be clicked */
+/* **fixes** Clicking on the icons would prevent the parent button to be clicked */
 .fa-trash, 
 .fa-check,
-.fa-edit {
+.fa-edit,
+.fa-save {
     pointer-events: none;
 }
 
