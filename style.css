@@ -136,6 +136,7 @@ form button:hover   {
 .todo-edit {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
+    flex: 1;
 }
 .save-btn {
     border-bottom-right-radius: 10px;
