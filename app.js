@@ -2,7 +2,8 @@
 const todoInput = document.querySelector('.todo-input');
 const todoButton = document.querySelector('.todo-button');
 const todoList = document.querySelector('.todo-list');
-// const editInput = document.querySelector('.confirm-edit');
+
+
 
 
 
@@ -14,9 +15,6 @@ document.addEventListener('DOMContentLoaded', getTodos);
 todoButton.addEventListener('click', addTodo);
 //listener for trash and check buttons
 todoList.addEventListener('click',deleteEditCheck);
-// //listener for editing an
-todoList.addEventListener('click', confirmTextEdit);
-
 
 //Functions
 
@@ -29,32 +27,7 @@ function addTodo(e) {
     //prevent form submission and reloading
     e.preventDefault();
     //Make the external TodoDiv with class="todo"
-    const todoDiv = document.createElement('div');
-    const wrapperDiv = document.createElement('div');
-    wrapperDiv.classList.add('todo');
-    todoDiv.appendChild(wrapperDiv);
-    //Create LI, get entered value from .todoInput and store it in li elements innerText.Add class="todo-item"
-    const newToDo = document.createElement('li');
-    newToDo.innerText = todoInput.value;
-    newToDo.classList.add('todo-item');
-    wrapperDiv.appendChild(newToDo);
-    //Create check mark button including the icon and add class="complete-btn"
-    const completedButton = document.createElement('button');
-    completedButton.innerHTML = '<i class="fas fa-check"></i>';
-    completedButton.classList.add('complete-btn');
-    wrapperDiv.appendChild(completedButton);
-    //Create edit Button with icon and class="edit-btn"
-    const editButton = document.createElement('button');
-    editButton.innerHTML = '<i class="fas fa-edit"></i>';
-    editButton.classList.add('edit-btn');
-    wrapperDiv.appendChild(editButton);
-    //Create trash Button with icon and class="trash-btn"
-    const trashButton = document.createElement('button');
-    trashButton.innerHTML = '<i class="fas fa-trash"></i>';
-    trashButton.classList.add('trash-btn');
-    wrapperDiv.appendChild(trashButton);
-    //After everything is created and appended, append al into todoList wrapper.
-    todoList.appendChild(todoDiv);
+    createTodoElement(todoInput.value);
     //Add created todo into local storage
     saveLocalTodos(todoInput.value);
     //clear todo input value
@@ -79,43 +52,42 @@ function deleteEditCheck(e) {
         removeLocalTodos(todo);
         //After fall transition ends removes item from Dom.
         todo.addEventListener('transitionend', function(){
-            todo.remove();
+            todo.parentElement.remove();
         });
     }  
 
-    //check mark adds class="completed" to li
+    //check mark adds or removes class="completed" to li
     if(item.classList[0] === 'complete-btn') item.parentElement.classList.toggle('completed');
     
 
     if(item.classList[0] === 'edit-btn') {
-        //target li item we want to edit its' text content and save div's text content.
-        const textToEdit = item.previousElementSibling.previousElementSibling.textContent;
-        const todoElement = item.parentElement.parentElement;
-        const form = document.createElement('form');
-        const input = document.createElement('input');
-        input.setAttribute('type','text');
-        input.classList.add('todo-input');
-        input.setAttribute('value', textToEdit);
-        form.appendChild(input);
-        const button = document.createElement('button');
-        button.setAttribute('type','submit');
-        button.classList.add('save-btn');
-        button.innerHTML = '<i class="fas fa-save"></i>';
-        form.appendChild(button);
-        todoElement.appendChild(form);
-        todoElement.children[0].remove();
-            //replace it with with form that will load text to edit.
+        const todoEdit = todoList.querySelector('.todo-edit');
+        //checks if user tried to edit to items simultaneously and throws error if so.
+        console.log(todoEdit);
+        if(todoEdit) alert('You can only edit one item at a time.');
+        //replace it with with form that will load with text to edit. removes todo list item
+        else createEditor(item);
         //after enter or + is pressed replace form with a div containing the new text and all the buttons
 
     };
-}
 
-function confirmTextEdit(e) {
-    if(e.target.classList[0] === 'confirm-edit') {
+    if(item.classList[0] === 'save-btn'){
         e.preventDefault();
-        const editInput = document.querySelector('.confirm-edit');
-        const updatedItem = editInput.previousElementSibling.value;
-        
+
+        const newText = item.previousElementSibling.value;
+        const editedItem = item.parentElement.parentElement;
+        //this will return the index number of the item edited in todoList.
+        const index = [].indexOf.call(todoList.children, editedItem);
+        updateLocalTodos(index,newText);
+        const editedTodo = item.parentElement.parentElement;
+        editedTodo.innerHTML = `
+        <div class="todo">
+            <li class="todo-item">${newText}</li>
+            <button class="complete-btn"><i class="fas fa-check"></i></button>
+            <button class="edit-btn"><i class="fas fa-edit"></i></button>
+            <button class="trash-btn"><i class="fas fa-trash"></i></button>
+        </div>
+        `;
     }
 }
 
@@ -140,36 +112,7 @@ function getTodos() {
     const todos = checkLocalStorage();
 
     //each existing todo item in local storage will be recreated and appended after page reloads. 
-    todos.forEach(todo => {
-        //Make TodoDiv
-        const todoDiv = document.createElement('div');
-        //create wrapperDiv
-        const wrapperDiv = document.createElement('div');
-        wrapperDiv.classList.add('todo');
-        todoDiv.appendChild(wrapperDiv);
-        //Create LI
-        const newToDo = document.createElement('li');
-        newToDo.innerText = todo;
-        newToDo.classList.add('todo-item');
-        wrapperDiv.appendChild(newToDo);
-        //Check mark button
-        const completedButton = document.createElement('button');
-        completedButton.innerHTML = '<i class="fas fa-check"></i>';
-        completedButton.classList.add('complete-btn');
-        wrapperDiv.appendChild(completedButton);
-        //Edit button
-        const editButton = document.createElement('button');
-        editButton.innerHTML = '<i class="fas fa-edit"></i>';
-        editButton.classList.add('edit-btn');
-        wrapperDiv.appendChild(editButton);
-        //trash Button
-        const trashButton = document.createElement('button');
-        trashButton.innerHTML = '<i class="fas fa-trash"></i>';
-        trashButton.classList.add('trash-btn');
-        wrapperDiv.appendChild(trashButton);
-        //append to list
-        todoList.appendChild(todoDiv);
-    });
+    todos.forEach(todo => createTodoElement(todo));
 }
 
 /**
@@ -187,6 +130,13 @@ function removeLocalTodos(todo) {
     localStorage.setItem('todos', JSON.stringify(todos));
 }
 
+function updateLocalTodos(index,newText) {
+    const todos = checkLocalStorage();
+    console.log(index);
+    todos.splice(index, 1, newText);
+    localStorage.setItem('todos', JSON.stringify(todos))
+}
+
 /**
  * @function checkLocalStorage
  * @description Checks if local storage is empty or not. If empty, creates an empty array Object else fetches array from local storage.
@@ -201,4 +151,60 @@ function checkLocalStorage() {
         todos = JSON.parse(localStorage.getItem('todos'));
     }
     return todos;
+}
+
+/**
+ * @function createEditor It will create an editor that will replace the todo div.
+ * @param {*} item event target that was clicked.
+ */
+function createEditor(item){
+    const textToEdit = item.previousElementSibling.previousElementSibling.textContent;
+    const todoElement = item.parentElement.parentElement;
+    const form = document.createElement('form');
+    const input = document.createElement('input');
+    input.setAttribute('type','text');
+    input.classList.add('todo-edit');
+    input.setAttribute('value', textToEdit);
+    form.appendChild(input);
+    const button = document.createElement('button');
+    button.setAttribute('type','submit');
+    button.classList.add('save-btn');
+    button.innerHTML = '<i class="fas fa-save"></i>';
+    form.appendChild(button);
+    todoElement.appendChild(form);
+    todoElement.children[0].remove();
+}
+
+/**
+ * @function createTodoElement Will create a new todo element or load it from local storage at DOMContentLoad
+ * @param {*} item text to be added on the todo item 
+ */
+function createTodoElement(item){
+    const wrapperDiv = document.createElement('div');
+    wrapperDiv.classList.add('todo-wrapper');
+    const todoDiv = document.createElement('div');
+    todoDiv.classList.add('todo');
+    wrapperDiv.appendChild(todoDiv);
+    //Create LI, get entered value from .todoInput and store it in li elements innerText.Add class="todo-item"
+    const newToDo = document.createElement('li');
+    newToDo.innerText = item;
+    newToDo.classList.add('todo-item');
+    todoDiv.appendChild(newToDo);
+    //Create check mark button including the icon and add class="complete-btn"
+    const completedButton = document.createElement('button');
+    completedButton.innerHTML = '<i class="fas fa-check"></i>';
+    completedButton.classList.add('complete-btn');
+    todoDiv.appendChild(completedButton);
+    //Create edit Button with icon and class="edit-btn"
+    const editButton = document.createElement('button');
+    editButton.innerHTML = '<i class="fas fa-edit"></i>';
+    editButton.classList.add('edit-btn');
+    todoDiv.appendChild(editButton);
+    //Create trash Button with icon and class="trash-btn"
+    const trashButton = document.createElement('button');
+    trashButton.innerHTML = '<i class="fas fa-trash"></i>';
+    trashButton.classList.add('trash-btn');
+    todoDiv.appendChild(trashButton);
+    //After everything is created and appended, append all into todoList wrapper.
+    todoList.appendChild(wrapperDiv);
 }

@@ -125,6 +125,22 @@ form button:hover   {
     opacity: 0;
 }
 
+/* ----- Edit item -----  */
+
+.todo-list form {
+    min-height: 0;
+    margin: 0.5rem;
+    justify-content: space-between;
+    transition: all 0.5s ease;
+}
+.todo-edit {
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.save-btn {
+    border-bottom-right-radius: 10px;
+}
+
 /* ----- @media screen sizes -----  */
 
 @media only screen and (min-width: 576px) {
