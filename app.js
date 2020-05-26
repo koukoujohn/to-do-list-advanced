@@ -98,6 +98,10 @@ function deleteEditCheck(e) {
     }
 }
 
+/**
+ * @function filterButtons- Adds filter functionality each time a filter button is pressed.
+ * @param {*} e 
+ */
 function filterButtons(e) {
     const todos = todoList.childNodes;
     let filter = e.target.textContent;
