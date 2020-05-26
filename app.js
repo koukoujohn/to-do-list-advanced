@@ -34,6 +34,8 @@ function addTodo(e) {
     createTodoElement(todoInput.value);
     //Add created todo into local storage
     saveLocalTodos(todoInput.value);
+    //track completed status in localstorage
+    completedAddLocal();
     //clear todo input value
     todoInput.value = '';
 }
@@ -47,6 +49,10 @@ function addTodo(e) {
 function deleteEditCheck(e) {
     const item = e.target;
 
+    const editedItem = item.parentElement.parentElement;
+    const index = [].indexOf.call(todoList.childNodes, editedItem);
+
+
     //delete todo
     if(item.classList[0] === 'trash-btn') {
         const todo = item.parentElement;
@@ -54,6 +60,7 @@ function deleteEditCheck(e) {
         todo.classList.add('fall');
         //Removes item from local storage.
         removeLocalTodos(todo);
+        completedDeleteLocal(index);
         //After fall transition ends removes item from Dom.
         todo.addEventListener('transitionend', function(){
             todo.parentElement.remove();
@@ -61,7 +68,17 @@ function deleteEditCheck(e) {
     }  
 
     //check mark adds or removes class="completed" to li
-    if(item.classList[0] === 'complete-btn') item.parentElement.classList.toggle('completed');
+    if(item.classList[0] === 'complete-btn') {
+        item.parentElement.classList.toggle('completed');
+        const completedItem = item.parentElement.parentElement;
+        const index = [].indexOf.call(todoList.children, completedItem);
+
+        if(item.parentElement.classList.contains('completed')){
+            completedChangeLocal(index);            
+        } else if (!item.parentElement.classList.contains('completed')){
+            completedChangeLocal(index);            
+        }
+    }
     
 
     if(item.classList[0] === 'edit-btn') {
@@ -71,8 +88,6 @@ function deleteEditCheck(e) {
         if(todoEdit) alert('You can only edit one item at a time.');
         //replace it with with form that will load with text to edit. removes todo list item
         else createEditor(item);
-        //after enter or + is pressed replace form with a div containing the new text and all the buttons
-
     };
 
     if(item.classList[0] === 'save-btn'){
@@ -103,6 +118,7 @@ function deleteEditCheck(e) {
  * @param {*} e 
  */
 function filterButtons(e) {
+    //get nodelist to iterate through it in each click on filter buttons
     const todos = todoList.childNodes;
     let filter = e.target.textContent;
     for(todo of todos){
@@ -125,15 +141,23 @@ function saveLocalTodos(todo)   {
     localStorage.setItem('todos', JSON.stringify(todos));
 }
 
+
 /**
  * @function getTodos
  * @description After DOM finishes loading,this function will get and create all existing todos from local storage if they exist.
  */
 function getTodos() {
     const todos = checkLocalStorage();
+    const completed = JSON.parse(localStorage.getItem('completed'));
 
     //each existing todo item in local storage will be recreated and appended after page reloads. 
     todos.forEach(todo => createTodoElement(todo));
+    
+    for(let i=0; i< todos.length; i++) {
+        if(completed[i] === true)
+            todoList.childNodes[i].children[0].classList.add('completed');
+    }
+
 }
 
 /**
@@ -172,11 +196,8 @@ function updateLocalTodos(index,newText) {
 function checkLocalStorage() {
     let todos;
     //if local storage is empty create an empty array. Else parse it and store it in todos.
-    if(localStorage.getItem('todos') === null) {
-        todos = [];
-    } else {
-        todos = JSON.parse(localStorage.getItem('todos'));
-    }
+    if(localStorage.getItem('todos') === null) todos = [];
+    else todos = JSON.parse(localStorage.getItem('todos'));
     return todos;
 }
 
@@ -234,4 +255,39 @@ function createTodoElement(item){
     todoDiv.appendChild(trashButton);
     //After everything is created and appended, append all into todoList wrapper.
     todoList.appendChild(wrapperDiv);
+}
+
+function completedAddLocal() {
+    let completed;
+    if(localStorage.getItem('completed') === null) completed = [];
+    else completed = JSON.parse(localStorage.getItem('completed'));
+
+    completed.push(false);
+    localStorage.setItem('completed', JSON.stringify(completed));
+}
+
+function completedDeleteLocal(index){
+    let completed;
+    if(localStorage.getItem('completed') === null) completed = [];
+    else completed = JSON.parse(localStorage.getItem('completed'));
+
+    completed.splice(index,1)
+    localStorage.setItem('completed', JSON.stringify(completed));
+}
+function completedChangeLocal(index){
+    let completed;
+    if(localStorage.getItem('completed') === null) completed = [];
+    else completed = JSON.parse(localStorage.getItem('completed'));
+
+    if(completed[index] === false){
+        completed.splice(index,1,true)
+        localStorage.setItem('completed', JSON.stringify(completed));
+    } else {
+        completed.splice(index,1,false)
+        localStorage.setItem('completed', JSON.stringify(completed));
+    }
+}
+
+function getCompletedStatus() {
+
 }
