@@ -2,6 +2,7 @@
 const todoInput = document.querySelector('.todo-input');
 const todoButton = document.querySelector('.todo-button');
 const todoList = document.querySelector('.todo-list');
+const filter = document.querySelector('.filter-wrapper');
 
 
 
@@ -14,7 +15,10 @@ document.addEventListener('DOMContentLoaded', getTodos);
 //when add button is clicked it adds todo items in todo-list ul
 todoButton.addEventListener('click', addTodo);
 //listener for trash and check buttons
-todoList.addEventListener('click',deleteEditCheck);
+todoList.addEventListener('click', deleteEditCheck);
+//listener for filter buttons
+filter.addEventListener('click', filterButtons);
+
 
 //Functions
 
@@ -73,14 +77,17 @@ function deleteEditCheck(e) {
 
     if(item.classList[0] === 'save-btn'){
         e.preventDefault();
-
+        //target the current text.
         const newText = item.previousElementSibling.value;
+        //target the wrapper div
         const editedItem = item.parentElement.parentElement;
+        //target the whole todo list and make an array out of the NodeList.
         //this will return the index number of the item edited in todoList.
         const index = [].indexOf.call(todoList.children, editedItem);
+        //update local storage
         updateLocalTodos(index,newText);
-        const editedTodo = item.parentElement.parentElement;
-        editedTodo.innerHTML = `
+        //revert it back into a todo item with the updated text.
+        editedItem.innerHTML = `
         <div class="todo">
             <li class="todo-item">${newText}</li>
             <button class="complete-btn"><i class="fas fa-check"></i></button>
@@ -88,6 +95,16 @@ function deleteEditCheck(e) {
             <button class="trash-btn"><i class="fas fa-trash"></i></button>
         </div>
         `;
+    }
+}
+
+function filterButtons(e) {
+    const todos = todoList.childNodes;
+    let filter = e.target.textContent;
+    for(todo of todos){
+        if(filter === 'All') todo.style.display = 'block';
+        if(filter === 'Completed') todo.children[0].classList.contains('completed') ? todo.style.display = 'block' : todo.style.display = 'none';
+        if(filter === 'Not Completed') !todo.children[0].classList.contains('completed') ? todo.style.display = 'block' : todo.style.display = 'none';
     }
 }
 
@@ -130,9 +147,15 @@ function removeLocalTodos(todo) {
     localStorage.setItem('todos', JSON.stringify(todos));
 }
 
+/**
+ * @function updateLocalTodos- This function will update a todo item using the array's index number with the updated text.
+ * @param {*} index The index number we want updated.
+ * @param {*} newText The updated text.
+ */
 function updateLocalTodos(index,newText) {
+    //Get current todos from local storage
     const todos = checkLocalStorage();
-    console.log(index);
+    //remove the specific todo item and update it with new text in local storage.
     todos.splice(index, 1, newText);
     localStorage.setItem('todos', JSON.stringify(todos))
 }

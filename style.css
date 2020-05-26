@@ -46,6 +46,36 @@ form button:hover   {
     color: white;
 }
 
+body form {
+    min-height: 6vh;
+}
+
+/* ----- Filter Buttons ----- */
+.filter-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 0.2rem;
+    margin-top: 0.3rem;
+    margin-bottom: 2rem;
+
+}
+
+.filter-btn {
+    background: #d88771;
+    color: white;
+    padding: 0.8rem;
+    border: none;
+    margin-left: 0.2rem;
+    border-radius: 0.25rem;
+}
+
+.filter-btn:hover {
+    background: white;
+    color: #d88771;
+    transition: ease 0.3s;
+}
+
 /* ----- To do ----- */
 
 .todo-container {
@@ -152,7 +182,8 @@ form button:hover   {
         font-size: 2rem;
     }
 
-    .todo {
+    .todo,
+    .filter-btn {
         font-size: 1.2rem;
     }
 @media only screen and (min-width: 768px){
