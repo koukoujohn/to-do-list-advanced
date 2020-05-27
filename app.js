@@ -5,9 +5,6 @@ const todoList = document.querySelector('.todo-list');
 const filter = document.querySelector('.filter-wrapper');
 
 
-
-
-
 //Event Listeners
 
 //when contents finish loading this listener will fetch all todo items from local storage.
@@ -84,10 +81,10 @@ function deleteEditCheck(e) {
     if(item.classList[0] === 'edit-btn') {
         const todoEdit = todoList.querySelector('.todo-edit');
         //checks if user tried to edit to items simultaneously and throws error if so.
-        console.log(todoEdit);
         if(todoEdit) alert('You can only edit one item at a time.');
         //replace it with with form that will load with text to edit. removes todo list item
         else createEditor(item);
+        //
     };
 
     if(item.classList[0] === 'save-btn'){
@@ -110,6 +107,7 @@ function deleteEditCheck(e) {
             <button class="trash-btn"><i class="fas fa-trash"></i></button>
         </div>
         `;
+        for(todo of todoList.children) todo.style.display = 'block'
     }
 }
 
@@ -274,6 +272,7 @@ function completedDeleteLocal(index){
     completed.splice(index,1)
     localStorage.setItem('completed', JSON.stringify(completed));
 }
+
 function completedChangeLocal(index){
     let completed;
     if(localStorage.getItem('completed') === null) completed = [];
@@ -286,8 +285,4 @@ function completedChangeLocal(index){
         completed.splice(index,1,false)
         localStorage.setItem('completed', JSON.stringify(completed));
     }
-}
-
-function getCompletedStatus() {
-
 }
