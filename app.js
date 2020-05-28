@@ -40,19 +40,17 @@ function addTodo(e) {
 /**
  * @function deleteEditCheck
  * @description This function will delete a list item if trash button is clicked and mark it as completed if
- * check icon is clicked.
+ * check icon is clicked. Also if edit button is clicked it will create edit environment with a save feature.
  * @param {*} e - An event parameter passed by the addEventListener.
  */
 function deleteEditCheck(e) {
     const item = e.target;
-
+    const todo = item.parentElement;
     const editedItem = item.parentElement.parentElement;
     const index = [].indexOf.call(todoList.childNodes, editedItem);
 
-
     //delete todo
     if(item.classList[0] === 'trash-btn') {
-        const todo = item.parentElement;
         //Adds animation/transition.
         todo.classList.add('fall');
         //Removes item from local storage.
@@ -60,42 +58,29 @@ function deleteEditCheck(e) {
         completedDeleteLocal(index);
         //After fall transition ends removes item from Dom.
         todo.addEventListener('transitionend', function(){
-            todo.parentElement.remove();
+            editedItem.remove();
         });
     }  
 
-    //check mark adds or removes class="completed" to li
+    //check mark adds or removes class="completed" to li in DOM and local storage
     if(item.classList[0] === 'complete-btn') {
-        item.parentElement.classList.toggle('completed');
-        const completedItem = item.parentElement.parentElement;
-        const index = [].indexOf.call(todoList.children, completedItem);
-
-        if(item.parentElement.classList.contains('completed')){
-            completedChangeLocal(index);            
-        } else if (!item.parentElement.classList.contains('completed')){
-            completedChangeLocal(index);            
-        }
+        todo.classList.toggle('completed');
+        completedChangeLocal(index);            
     }
     
 
     if(item.classList[0] === 'edit-btn') {
+        //checks if user tried to edit two items simultaneously and throws error if so.
         const todoEdit = todoList.querySelector('.todo-edit');
-        //checks if user tried to edit to items simultaneously and throws error if so.
         if(todoEdit) alert('You can only edit one item at a time.');
-        //replace it with with form that will load with text to edit. removes todo list item
+        //adds edit mode to the specific li. removes todo list item.
         else createEditor(item);
-        //
     };
 
     if(item.classList[0] === 'save-btn'){
         e.preventDefault();
-        //target the current text.
+        //target and save the current text we want to change.
         const newText = item.previousElementSibling.value;
-        //target the wrapper div
-        const editedItem = item.parentElement.parentElement;
-        //target the whole todo list and make an array out of the NodeList.
-        //this will return the index number of the item edited in todoList.
-        const index = [].indexOf.call(todoList.children, editedItem);
         //update local storage
         updateLocalTodos(index,newText);
         //revert it back into a todo item with the updated text.
@@ -107,7 +92,12 @@ function deleteEditCheck(e) {
             <button class="trash-btn"><i class="fas fa-trash"></i></button>
         </div>
         `;
-        for(todo of todoList.children) todo.style.display = 'block'
+        //set filtering to All
+        for(let todo of todoList.children) todo.style.display = 'block';
+        //revert completed status to false in local
+        let completed = getCompletedLocal();
+        completed.splice(index,1,false);
+        localStorage.setItem('completed', JSON.stringify(completed));
     }
 }
 
@@ -118,13 +108,15 @@ function deleteEditCheck(e) {
 function filterButtons(e) {
     //get nodelist to iterate through it in each click on filter buttons
     const todos = todoList.childNodes;
-    let filter = e.target.textContent;
+    const filter = e.target.textContent;
     for(todo of todos){
         if(filter === 'All') todo.style.display = 'block';
         if(filter === 'Completed') todo.children[0].classList.contains('completed') ? todo.style.display = 'block' : todo.style.display = 'none';
         if(filter === 'Not Completed') !todo.children[0].classList.contains('completed') ? todo.style.display = 'block' : todo.style.display = 'none';
     }
 }
+
+/*----- Todo list Local storage Functions -----*/
 
 /**
  * @function saveLocalTodos
@@ -143,31 +135,28 @@ function saveLocalTodos(todo)   {
 /**
  * @function getTodos
  * @description After DOM finishes loading,this function will get and create all existing todos from local storage if they exist.
+ * and their completed status.
  */
 function getTodos() {
     const todos = checkLocalStorage();
     const completed = JSON.parse(localStorage.getItem('completed'));
-
     //each existing todo item in local storage will be recreated and appended after page reloads. 
     todos.forEach(todo => createTodoElement(todo));
-    
-    for(let i=0; i< todos.length; i++) {
-        if(completed[i] === true)
-            todoList.childNodes[i].children[0].classList.add('completed');
-    }
-
+    //will check if there are completed items in local and ad the class. Had to use for() because of childNodes[i].
+    for(let i=0; i< todos.length; i++)
+        if(completed[i] === true) todoList.childNodes[i].childNodes[0].classList.add('completed');
 }
 
 /**
  * @function removeLocalTodos
- * @description This function will delete a todo item when the trash button is clicked.
+ * @description This function will delete a todo item when the trash button is clicked based on the text of this item.
  * @param {string} todo - A value passed by the deleteEditCheck() function.
  */
 function removeLocalTodos(todo) {
     /*This function doesn't check if an array exist in localstorage,because in order to be able to click
     trash icon an item has to exist in local storage. Thus directly fetches todos list.
     */
-    let todos = JSON.parse(localStorage.getItem('todos'));
+    const todos = checkLocalStorage();
     const todoIndex = todo.children[0].innerText;
     todos.splice(todos.indexOf(todoIndex), 1);
     localStorage.setItem('todos', JSON.stringify(todos));
@@ -198,6 +187,8 @@ function checkLocalStorage() {
     else todos = JSON.parse(localStorage.getItem('todos'));
     return todos;
 }
+
+/*----- Creator fanctions -----*/
 
 /**
  * @function createEditor It will create an editor that will replace the todo div.
@@ -255,28 +246,33 @@ function createTodoElement(item){
     todoList.appendChild(wrapperDiv);
 }
 
-function completedAddLocal() {
-    let completed;
-    if(localStorage.getItem('completed') === null) completed = [];
-    else completed = JSON.parse(localStorage.getItem('completed'));
+/*----- Completed state functions -----*/
 
+/**
+ * @function completedAddLocal When a new Todo item is added this function adds a false value in the completed array.
+ */
+function completedAddLocal() {
+    let completed = getCompletedLocal();
     completed.push(false);
     localStorage.setItem('completed', JSON.stringify(completed));
 }
 
+/**
+ * @function completedDeleteLocal Removes the selected item from completed array in storage.
+ * @param {*} index the index number of the todoList item
+ */
 function completedDeleteLocal(index){
-    let completed;
-    if(localStorage.getItem('completed') === null) completed = [];
-    else completed = JSON.parse(localStorage.getItem('completed'));
-
+    let completed = getCompletedLocal();
     completed.splice(index,1)
     localStorage.setItem('completed', JSON.stringify(completed));
 }
 
+/**
+ * @function completedChangeLocal Toggles the selected item from completed array in storage.
+ * @param {*} index the index number of the todoList item
+ */
 function completedChangeLocal(index){
-    let completed;
-    if(localStorage.getItem('completed') === null) completed = [];
-    else completed = JSON.parse(localStorage.getItem('completed'));
+    let completed = getCompletedLocal();
 
     if(completed[index] === false){
         completed.splice(index,1,true)
@@ -285,4 +281,15 @@ function completedChangeLocal(index){
         completed.splice(index,1,false)
         localStorage.setItem('completed', JSON.stringify(completed));
     }
+}
+
+/**
+ * @function getCompletedLocal Gets the completed array from local storage. If it's nulled it returns empty array.
+ * @returns completed array or empty array.
+ */
+function getCompletedLocal() {
+    let completed;
+    if(localStorage.getItem('completed') === null) completed = [];
+    else completed = JSON.parse(localStorage.getItem('completed'));
+    return completed;
 }
