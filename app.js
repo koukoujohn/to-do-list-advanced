@@ -69,13 +69,7 @@ function deleteEditCheck(e) {
     }
     
 
-    if(item.classList[0] === 'edit-btn') {
-        //checks if user tried to edit two items simultaneously and throws error if so.
-        const todoEdit = todoList.querySelector('.todo-edit');
-        if(todoEdit) alert('You can only edit one item at a time.');
-        //adds edit mode to the specific li. removes todo list item.
-        else createEditor(item);
-    };
+    if(item.classList[0] === 'edit-btn') createEditor(item);
 
     if(item.classList[0] === 'save-btn'){
         e.preventDefault();
@@ -94,7 +88,7 @@ function deleteEditCheck(e) {
         `;
         //set filtering to All
         for(let todo of todoList.children) todo.style.display = 'block';
-        //revert completed status to false in local
+        //revert item's completed status to false in local
         let completed = getCompletedLocal();
         completed.splice(index,1,false);
         localStorage.setItem('completed', JSON.stringify(completed));

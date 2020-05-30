@@ -4,10 +4,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    border: none;
 }
 
 body {
     background: linear-gradient(120deg, rgba(246,211,101,1) 0%, rgba(253,160,133,1) 100%);
+    background-repeat: no-repeat;
     color: white ;
     font-family: "Poppins", sans-serif;
     min-height: 100vh;
@@ -19,35 +21,38 @@ header {
 }
 
 header,
-form {
+.todo-form {
     min-height: 20vh;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-form input,
-form button {
+.todo-input,
+.todo-button {
     padding: 0.5rem;
     font-size: 1rem;
     border: none;
     background: white;
+    min-height: 3rem;
 }
 
-form button {
+.todo-form button {
     color: #d88771;
     background: white;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
-form button:hover   {
+.todo-form button:hover   {
     background: #d88771;
     color: white;
 }
 
-body form {
+.todo-form {
     min-height: 6vh;
+    max-width: 90%;
+    margin: 0 auto;
 }
 
 /* ----- Filter Buttons ----- */
@@ -158,18 +163,24 @@ body form {
 /* ----- Edit item -----  */
 
 .todo-list form {
-    min-height: 0;
     margin: 0.5rem;
-    justify-content: space-between;
     transition: all 0.5s ease;
 }
 .todo-edit {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
-    flex: 1;
+    /* flex: 1; */
 }
 .save-btn {
     border-bottom-right-radius: 10px;
+    font-size: 1rem;
+    padding: 0 1rem 0 1rem;
+
+}
+
+.todo-edit,
+.save-btn {
+    min-height: 3rem;
 }
 
 /* ----- @media screen sizes -----  */
@@ -177,8 +188,8 @@ body form {
 @media only screen and (min-width: 576px) {
 
     header,
-    form input,
-    form button {
+    .todo-input,
+    .todo-button {
         font-size: 2rem;
     }
 
