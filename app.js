@@ -88,7 +88,7 @@ function deleteEditCheck(e) {
         `;
         //set filtering to All
         for(let todo of todoList.children) todo.style.display = 'block';
-        //revert completed status to false in local
+        //revert item's completed status to false in local
         let completed = getCompletedLocal();
         completed.splice(index,1,false);
         localStorage.setItem('completed', JSON.stringify(completed));
