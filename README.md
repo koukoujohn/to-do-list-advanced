@@ -1,6 +1,6 @@
 # to-do-list-advanced
 
-[Link](https://koukoujohn13.github.io/to-do-list-advanced/?)
+[Link](https://koukoujohn.github.io/to-do-list-advanced/?)
 
 !!Work in progress!!
 
